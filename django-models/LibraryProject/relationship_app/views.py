@@ -1,9 +1,21 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import user_passes_test
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
+from django.contrib.auth.models import User
 from .models import Library
+
+# Utility functions for role checking
+def is_admin(user):
+    return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == 'Admin'
+
+def is_librarian(user):
+    return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == 'Librarian'
+
+def is_member(user):
+    return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == 'Member'
 
 # Function-based view to list all books
 def list_books(request):
@@ -23,7 +35,7 @@ class LibraryListView(ListView):
     template_name = 'relationship_app/library_list.html'
     context_object_name = 'libraries'
 
-# Registration view only (login/logout handled by Django's built-in views)
+# Registration view
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -34,3 +46,25 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
+
+# Role-based views
+@user_passes_test(is_admin, login_url='/relationship/login/')
+def admin_view(request):
+    users = User.objects.all()
+    return render(request, 'relationship_app/admin_view.html', {'users': users})
+
+@user_passes_test(is_librarian, login_url='/relationship/login/')
+def librarian_view(request):
+    from .models import Book, Library
+    books = Book.objects.all()
+    libraries = Library.objects.all()
+    return render(request, 'relationship_app/librarian_view.html', {
+        'books': books,
+        'libraries': libraries
+    })
+
+@user_passes_test(is_member, login_url='/relationship/login/')
+def member_view(request):
+    from .models import Book
+    books = Book.objects.all()
+    return render(request, 'relationship_app/member_view.html', {'books': books})
