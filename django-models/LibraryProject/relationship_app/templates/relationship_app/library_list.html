@@ -20,13 +20,29 @@
     </ul>
     <a href="{% url 'relationship_app:list_books' %}">View All Books</a>
     <div style="float: right;">
-    {% if user.is_authenticated %}
-        Welcome, {{ user.username }}! 
-        <a href="{% url 'relationship_app:logout' %}">Logout</a>
-    {% else %}
-        <a href="{% url 'relationship_app:login' %}">Login</a> | 
-        <a href="{% url 'relationship_app:register' %}">Register</a>
-    {% endif %}
-</div>
+        {% if user.is_authenticated %}
+            Welcome, {{ user.username }}! 
+            <a href="{% url 'relationship_app:logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'relationship_app:login' %}">Login</a> | 
+            <a href="{% url 'relationship_app:register' %}">Register</a>
+        {% endif %}
+    </div>
+    <div style="float: right;">
+        {% if user.is_authenticated %}
+            Welcome, {{ user.username }} ({{ user.profile.role }})! 
+            {% if user.profile.role == 'Admin' %}
+                <a href="{% url 'relationship_app:admin_view' %}">Admin Dashboard</a> |
+            {% elif user.profile.role == 'Librarian' %}
+                <a href="{% url 'relationship_app:librarian_view' %}">Librarian Dashboard</a> |
+            {% elif user.profile.role == 'Member' %}
+                <a href="{% url 'relationship_app:member_view' %}">Member Dashboard</a> |
+            {% endif %}
+            <a href="{% url 'relationship_app:logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'relationship_app:login' %}">Login</a> | 
+            <a href="{% url 'relationship_app:register' %}">Register</a>
+        {% endif %}
+    </div>
 </body>
 </html>
