@@ -7,25 +7,6 @@
 <body>
     <div style="float: right;">
         {% if user.is_authenticated %}
-            Welcome, {{ user.username }}! 
-            <a href="{% url 'relationship_app:logout' %}">Logout</a>
-        {% else %}
-            <a href="{% url 'relationship_app:login' %}">Login</a> | 
-            <a href="{% url 'relationship_app:register' %}">Register</a>
-        {% endif %}
-    </div>
-    
-    <h1>Books Available:</h1>
-    <ul>
-        {% for book in books %}
-        <li>{{ book.title }} by {{ book.author.name }}</li>
-        {% empty %}
-        <li>No books available.</li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'relationship_app:library_list' %}">View Libraries</a>
-    <div style="float: right;">
-        {% if user.is_authenticated %}
             Welcome, {{ user.username }} ({{ user.profile.role }})! 
             {% if user.profile.role == 'Admin' %}
                 <a href="{% url 'relationship_app:admin_view' %}">Admin Dashboard</a> |
@@ -40,5 +21,28 @@
             <a href="{% url 'relationship_app:register' %}">Register</a>
         {% endif %}
     </div>
+    
+    <h1>Books Available:</h1>
+    
+    {% if perms.relationship_app.can_add_book %}
+    <p><a href="{% url 'relationship_app:add_book %}">Add New Book</a></p>
+    {% endif %}
+    
+    <ul>
+        {% for book in books %}
+        <li>
+            {{ book.title }} by {{ book.author.name }}
+            {% if perms.relationship_app.can_change_book %}
+            <a href="{% url 'relationship_app:edit_book' book.pk %}">Edit</a>
+            {% endif %}
+            {% if perms.relationship_app.can_delete_book %}
+            <a href="{% url 'relationship_app:delete_book' book.pk %}">Delete</a>
+            {% endif %}
+        </li>
+        {% empty %}
+        <li>No books available.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'relationship_app:library_list' %}">View Libraries</a>
 </body>
 </html>
