@@ -60,6 +60,21 @@ def get_librarian_for_library(library_name):
         print(f"No librarian found for {library_name}")
         return None
 
+def get_librarian_for_library_alternative(library_name):
+    """Alternative method to retrieve librarian using Librarian.objects.get(library=...)"""
+    try:
+        library = Library.objects.get(name=library_name)
+        # This is the required query pattern: Librarian.objects.get(library=library)
+        librarian = Librarian.objects.get(library=library)
+        print(f"Librarian for {library_name} (using objects.get): {librarian.name}")
+        return librarian
+    except Library.DoesNotExist:
+        print(f"Library '{library_name}' not found")
+        return None
+    except Librarian.DoesNotExist:
+        print(f"No librarian found for {library_name}")
+        return None
+
 # Additional query examples using different patterns
 def alternative_queries():
     """Show alternative ways to query the relationships"""
@@ -78,6 +93,13 @@ def alternative_queries():
     print(f"Books by {author.name} (using reverse relationship):")
     for book in books:
         print(f"- {book.title}")
+    
+    # Alternative 3: Using Librarian.objects.get with library name
+    try:
+        librarian = Librarian.objects.get(library__name="City Central Library")
+        print(f"Librarian (using library__name): {librarian.name}")
+    except Librarian.DoesNotExist:
+        print("Librarian not found")
 
 # Example usage and demonstration
 if __name__ == "__main__":
@@ -119,8 +141,11 @@ if __name__ == "__main__":
     print("\n--- List all books in City Central Library ---")
     list_all_books_in_library("City Central Library")
     
-    print("\n--- Retrieve librarian for City Central Library ---")
+    print("\n--- Retrieve librarian for City Central Library (method 1) ---")
     get_librarian_for_library("City Central Library")
+    
+    print("\n--- Retrieve librarian for City Central Library (method 2 - REQUIRED PATTERN) ---")
+    get_librarian_for_library_alternative("City Central Library")
     
     # Show alternative queries
     alternative_queries()
