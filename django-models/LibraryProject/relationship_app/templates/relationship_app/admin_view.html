@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <div style="float: right;">
+        Welcome, {{ user.username }} ({{ user.profile.role }})! 
+        <a href="{% url 'relationship_app:logout' %}">Logout</a>
+    </div>
+    
+    <h1>Admin Dashboard</h1>
+    <p>This page is only accessible to users with the Admin role.</p>
+    
+    <h2>User Management</h2>
+    <ul>
+        {% for user in users %}
+        <li>{{ user.username }} - {{ user.profile.role }}</li>
+        {% endfor %}
+    </ul>
+    
+    <nav>
+        <a href="{% url 'relationship_app:list_books' %}">All Books</a> |
+        <a href="{% url 'relationship_app:library_list' %}">All Libraries</a>
+    </nav>
+</body>
+</html>
