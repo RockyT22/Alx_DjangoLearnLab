@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db.models.signals import post_save
-from django.dispatch import receiver
+from bookshelf.models import CustomUser
 
 # Custom User Manager
 class CustomUserManager(BaseUserManager):
@@ -107,3 +107,4 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     if hasattr(instance, 'profile'):
         instance.profile.save()
+
