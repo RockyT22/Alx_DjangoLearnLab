@@ -1,0 +1,207 @@
+﻿{% extends "relationship_app/base.html" %}
+
+{% block title %}My Profile - Library System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>👤 My Profile</h1>
+    <p>Account Information and Role Details</p>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+    <!-- Profile Info -->
+    <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <div style="text-align: center; margin-bottom: 25px;">
+            <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                        border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+                        margin: 0 auto 15px; color: white; font-size: 36px; font-weight: bold;">
+                {{ user.username|first|upper }}
+            </div>
+            <h2 style="color: #333; margin-bottom: 5px;">{{ user.username }}</h2>
+            <p style="color: #666; margin-bottom: 20px;">{{ user.email }}</p>
+        </div>
+        
+        <!-- Role Information -->
+        <div style="margin-bottom: 25px;">
+            <h3 style="color: #333; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
+                Role Information
+            </h3>
+            
+            <div style="background: 
+                {% if is_admin %}
+                    linear-gradient(135deg, #667eea 0%, #764ba2 100%)
+                {% elif is_librarian %}
+                    linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)
+                {% else %}
+                    linear-gradient(135deg, #fa709a 0%, #fee140 100%)
+                {% endif %}; 
+                color: white; padding: 15px; border-radius: 6px; text-align: center; margin-bottom: 15px;">
+                <div style="font-size: 20px; font-weight: bold;">{{ role_display }}</div>
+                <p style="margin: 5px 0 0 0; opacity: 0.9;">
+                    {% if is_admin %}
+                        Full system access
+                    {% elif is_librarian %}
+                        Library management access
+                    {% else %}
+                        Member access
+                    {% endif %}
+                </p>
+            </div>
+            
+            <!-- Role-based Dashboard Link -->
+            <div style="text-align: center; margin-top: 20px;">
+                {% if is_admin %}
+                    <a href="{% url 'relationship_app:admin_dashboard' %}" 
+                       style="display: block; background: #667eea; color: white; padding: 12px; 
+                              text-decoration: none; border-radius: 6px; font-weight: bold;">
+                        Go to Admin Dashboard
+                    </a>
+                {% elif is_librarian %}
+                    <a href="{% url 'relationship_app:librarian_dashboard' %}" 
+                       style="display: block; background: #43e97b; color: white; padding: 12px; 
+                              text-decoration: none; border-radius: 6px; font-weight: bold;">
+                        Go to Librarian Dashboard
+                    </a>
+                {% else %}
+                    <a href="{% url 'relationship_app:member_dashboard' %}" 
+                       style="display: block; background: #fa709a; color: white; padding: 12px; 
+                              text-decoration: none; border-radius: 6px; font-weight: bold;">
+                        Go to Member Dashboard
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Account Information -->
+        <div style="margin-bottom: 25px;">
+            <h3 style="color: #333; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
+                Account Details
+            </h3>
+            <div style="margin-bottom: 10px;">
+                <strong style="color: #555;">Member Since:</strong> 
+                <span style="color: #666;">{{ user.date_joined|date:"F d, Y" }}</span>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <strong style="color: #555;">Last Login:</strong> 
+                <span style="color: #666;">{{ user.last_login|date:"F d, Y H:i" }}</span>
+            </div>
+            <div>
+                <strong style="color: #555;">Account Status:</strong> 
+                <span style="color: #4CAF50; font-weight: bold;">Active</span>
+            </div>
+        </div>
+        
+        <!-- Logout -->
+        <div style="margin-top: 25px;">
+            <a href="{% url 'relationship_app:logout' %}" 
+               style="display: block; text-align: center; background: #dc3545; color: white; 
+                      padding: 12px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                Logout
+            </a>
+        </div>
+    </div>
+    
+    <!-- Dashboard & Access -->
+    <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h2 style="color: #333; margin-bottom: 25px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
+            Role-Based Access
+        </h2>
+        
+        <!-- Role Permissions -->
+        <div style="margin-bottom: 30px;">
+            <h3 style="color: #333; margin-bottom: 15px;">Your Permissions</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div style="border: 1px solid #e0e0e0; padding: 15px; border-radius: 6px; 
+                            background: {% if is_admin %}#e3f2fd{% else %}#f5f5f5{% endif %};">
+                    <div style="font-size: 24px; margin-bottom: 10px; color: 
+                        {% if is_admin %}#1976d2{% else %}#9e9e9e{% endif %};">
+                        👑
+                    </div>
+                    <h4 style="margin: 0 0 10px 0; color: #333;">Admin Access</h4>
+                    <p style="margin: 0; color: #666; font-size: 14px;">
+                        {% if is_admin %}
+                            Full system administration
+                        {% else %}
+                            Not available
+                        {% endif %}
+                    </p>
+                </div>
+                
+                <div style="border: 1px solid #e0e0e0; padding: 15px; border-radius: 6px; 
+                            background: {% if is_librarian %}#e8f5e9{% else %}#f5f5f5{% endif %};">
+                    <div style="font-size: 24px; margin-bottom: 10px; color: 
+                        {% if is_librarian %}#2e7d32{% else %}#9e9e9e{% endif %};">
+                        📚
+                    </div>
+                    <h4 style="margin: 0 0 10px 0; color: #333;">Librarian Access</h4>
+                    <p style="margin: 0; color: #666; font-size: 14px;">
+                        {% if is_librarian %}
+                            Library management
+                        {% else %}
+                            Not available
+                        {% endif %}
+                    </p>
+                </div>
+                
+                <div style="border: 1px solid #e0e0e0; padding: 15px; border-radius: 6px; 
+                            background: #fff3e0;">
+                    <div style="font-size: 24px; margin-bottom: 10px; color: #f57c00;">
+                        👤
+                    </div>
+                    <h4 style="margin: 0 0 10px 0; color: #333;">Member Access</h4>
+                    <p style="margin: 0; color: #666; font-size: 14px;">
+                        Book browsing and borrowing
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Links -->
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+            <h3 style="color: #333; margin-bottom: 15px;">📋 Quick Links</h3>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <a href="{% url 'relationship_app:home' %}" 
+                   style="background: #6c757d; color: white; padding: 10px 20px; text-decoration: none; 
+                          border-radius: 4px; font-size: 14px;">
+                    Home
+                </a>
+                <a href="{% url 'relationship_app:list_books' %}" 
+                   style="background: #17a2b8; color: white; padding: 10px 20px; text-decoration: none; 
+                          border-radius: 4px; font-size: 14px;">
+                    Books
+                </a>
+                <a href="{% url 'relationship_app:library_list' %}" 
+                   style="background: #28a745; color: white; padding: 10px 20px; text-decoration: none; 
+                          border-radius: 4px; font-size: 14px;">
+                    Libraries
+                </a>
+                {% if is_admin %}
+                <a href="/admin/" target="_blank" 
+                   style="background: #343a40; color: white; padding: 10px 20px; text-decoration: none; 
+                          border-radius: 4px; font-size: 14px;">
+                    Admin Panel
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Role Information Note -->
+        <div style="background: #fff3cd; padding: 15px; border-radius: 6px; 
+                    border-left: 4px solid #ffc107;">
+            <h4 style="color: #856404; margin-bottom: 10px;">ℹ️ Role Information</h4>
+            <p style="color: #856404; margin: 0; font-size: 14px;">
+                Your current role is <strong>{{ role_display }}</strong>. 
+                {% if is_admin %}
+                    You have full administrative access to the system.
+                {% elif is_librarian %}
+                    You can manage libraries and assist members.
+                {% else %}
+                    You can browse books and access library resources.
+                {% endif %}
+                Contact an administrator if you need your role changed.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

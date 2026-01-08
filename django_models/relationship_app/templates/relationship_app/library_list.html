@@ -1,0 +1,28 @@
+﻿{% extends "relationship_app/base.html" %}
+
+{% block title %}All Libraries - Library System{% endblock %}
+
+{% block content %}
+<h1>All Libraries</h1>
+
+{% if libraries %}
+    {% for library in libraries %}
+    <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+        <h3>{{ library.name }}</h3>
+        <p><strong>Books:</strong> {{ library.books.count }}</p>
+        {% if library.librarian %}
+        <p><strong>Librarian:</strong> {{ library.librarian.name }}</p>
+        {% endif %}
+        <a href="{% url 'relationship_app:library_detail' library.id %}">View Details</a>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>No libraries available in the database.</p>
+{% endif %}
+
+<hr>
+<p>
+    <a href="{% url 'relationship_app:list_books' %}">View All Books</a> |
+    <a href="{% url 'relationship_app:home' %}">Home</a>
+</p>
+{% endblock %}

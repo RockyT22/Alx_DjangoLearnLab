@@ -1,0 +1,118 @@
+﻿{% extends "relationship_app/base.html" %}
+
+{% block title %}Librarian Dashboard - Library System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📚 Librarian Dashboard</h1>
+    <p>Library Management and Book Oversight</p>
+</div>
+
+<div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <!-- Welcome Message -->
+    <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); 
+                color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h2 style="margin: 0;">Welcome, {{ user.username }}!</h2>
+        <p style="margin: 10px 0 0 0; opacity: 0.9;">You are logged in as <strong>Librarian</strong></p>
+    </div>
+    
+    <!-- Libraries in Charge -->
+    <h2 style="color: #333; margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
+        🏛️ Libraries Under Your Management
+    </h2>
+    
+    {% if libraries %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            {% for library in libraries %}
+            <div style="border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background: #f9f9f9;">
+                <h3 style="color: #2c3e50; margin-bottom: 10px;">{{ library.name }}</h3>
+                <div style="color: #666; margin-bottom: 15px;">
+                    <p><strong>📚 Books:</strong> {{ library.books.count }}</p>
+                    {% if library.librarian %}
+                    <p><strong>👨‍💼 Assigned Librarian:</strong> {{ library.librarian.name }}</p>
+                    {% endif %}
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <a href="{% url 'relationship_app:library_detail' library.id %}" 
+                       style="background: #4CAF50; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px;">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 6px; margin-bottom: 30px;">
+            <p style="margin: 0; color: #2e7d32;">
+                <strong>📊 Summary:</strong> You are managing {{ libraries|length }} library/libraries 
+                with a total of {{ total_books_in_charge }} books under your oversight.
+            </p>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 40px; background: #fff3cd; border-radius: 8px; margin-bottom: 30px;">
+            <div style="font-size: 48px; margin-bottom: 20px;">📭</div>
+            <h3 style="color: #856404;">No Libraries Assigned</h3>
+            <p style="color: #856404;">You are not currently assigned to manage any libraries.</p>
+            <p style="color: #856404; margin-top: 10px;">
+                Please contact an administrator to be assigned to a library.
+            </p>
+        </div>
+    {% endif %}
+    
+    <!-- Librarian Tools -->
+    <h2 style="color: #333; margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
+        🛠️ Librarian Tools
+    </h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 36px; margin-bottom: 15px;">🔍</div>
+            <h3 style="margin: 0 0 10px 0;">Book Search</h3>
+            <p style="margin: 0; color: #666;">Search for books in your libraries</p>
+            <a href="{% url 'relationship_app:list_books' %}" 
+               style="display: inline-block; margin-top: 15px; color: #2196F3; text-decoration: none;">
+                Search Books →
+            </a>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 36px; margin-bottom: 15px;">📋</div>
+            <h3 style="margin: 0 0 10px 0;">Library Reports</h3>
+            <p style="margin: 0; color: #666;">Generate library activity reports</p>
+            <a href="{% url 'relationship_app:library_list' %}" 
+               style="display: inline-block; margin-top: 15px; color: #2196F3; text-decoration: none;">
+                View Libraries →
+            </a>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 36px; margin-bottom: 15px;">👥</div>
+            <h3 style="margin: 0 0 10px 0;">Member Assistance</h3>
+            <p style="margin: 0; color: #666;">Help members with book inquiries</p>
+            <a href="{% url 'relationship_app:home' %}" 
+               style="display: inline-block; margin-top: 15px; color: #2196F3; text-decoration: none;">
+                Go to Home →
+            </a>
+        </div>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin-top: 30px;">
+        <h3 style="color: #1976d2; margin-bottom: 15px;">📈 Quick Statistics</h3>
+        <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px;">
+            <div style="text-align: center;">
+                <div style="font-size: 24px; font-weight: bold; color: #1976d2;">{{ libraries|length }}</div>
+                <div style="color: #555;">Managed Libraries</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 24px; font-weight: bold; color: #2e7d32;">{{ total_books_in_charge }}</div>
+                <div style="color: #555;">Books in Charge</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 24px; font-weight: bold; color: #f57c00;">24/7</div>
+                <div style="color: #555;">Availability</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+﻿{% extends "relationship_app/base.html" %}
+
+{% block title %}Delete Book - Library System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>🗑️ Delete Book</h1>
+    <p>Confirm deletion of book</p>
+</div>
+
+<div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; text-align: center;">
+    
+    <div style="font-size: 48px; color: #dc3545; margin-bottom: 20px;">⚠️</div>
+    
+    <h2 style="color: #333; margin-bottom: 20px;">Are you sure you want to delete this book?</h2>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h3 style="color: #2c3e50; margin-bottom: 10px;">{{ book.title }}</h3>
+        <p style="color: #666; margin-bottom: 5px;"><strong>Author:</strong> {{ book.author.name }}</p>
+    </div>
+    
+    <p style="color: #666; margin-bottom: 30px;">
+        This action cannot be undone. The book will be permanently removed from the system.
+    </p>
+    
+    <form method="post" style="margin-bottom: 20px;">
+        {% csrf_token %}
+        <div style="display: flex; gap: 15px; justify-content: center;">
+            <a href="{% if book %}{% url 'relationship_app:book_detail' book.id %}{% else %}{% url 'relationship_app:list_books' %}{% endif %}" 
+               style="background: #6c757d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
+                Cancel
+            </a>
+            <button type="submit" 
+                    style="background: #dc3545; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
+                Yes, Delete Permanently
+            </button>
+        </div>
+    </form>
+    
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+        <a href="{% url 'relationship_app:list_books' %}" 
+           style="color: #2196F3; text-decoration: none;">
+            ← Back to All Books
+        </a>
+    </div>
+</div>
+{% endblock %}

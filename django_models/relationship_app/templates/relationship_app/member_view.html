@@ -1,0 +1,132 @@
+﻿{% extends "relationship_app/base.html" %}
+
+{% block title %}Member Dashboard - Library System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>👤 Member Dashboard</h1>
+    <p>Your Personal Library Experience</p>
+</div>
+
+<div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <!-- Welcome Message -->
+    <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); 
+                color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h2 style="margin: 0;">Welcome, {{ user.username }}!</h2>
+        <p style="margin: 10px 0 0 0; opacity: 0.9;">You are logged in as <strong>Library Member</strong></p>
+    </div>
+    
+    <!-- Available Resources -->
+    <h2 style="color: #333; margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
+        📚 Available Resources
+    </h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 36px; font-weight: bold; color: #2e7d32;">{{ available_books }}</div>
+            <div style="color: #555; margin-top: 10px;">Books Available</div>
+            <a href="{% url 'relationship_app:list_books' %}" 
+               style="display: inline-block; margin-top: 15px; color: #2e7d32; text-decoration: none; font-weight: bold;">
+                Browse Books →
+            </a>
+        </div>
+        
+        <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 36px; font-weight: bold; color: #1976d2;">{{ available_libraries }}</div>
+            <div style="color: #555; margin-top: 10px;">Libraries Available</div>
+            <a href="{% url 'relationship_app:library_list' %}" 
+               style="display: inline-block; margin-top: 15px; color: #1976d2; text-decoration: none; font-weight: bold;">
+                Explore Libraries →
+            </a>
+        </div>
+        
+        <div style="background: #fff3e0; padding: 20px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 36px; font-weight: bold; color: #f57c00;">24/7</div>
+            <div style="color: #555; margin-top: 10px;">Access Hours</div>
+            <a href="{% url 'relationship_app:home' %}" 
+               style="display: inline-block; margin-top: 15px; color: #f57c00; text-decoration: none; font-weight: bold;">
+                Visit Home →
+            </a>
+        </div>
+    </div>
+    
+    <!-- Recently Added Books -->
+    <h2 style="color: #333; margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
+        🆕 Recently Added Books
+    </h2>
+    
+    {% if recent_books %}
+        <div style="margin-bottom: 30px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                {% for book in recent_books %}
+                <div style="border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px; background: #f9f9f9;">
+                    <h4 style="color: #2c3e50; margin-bottom: 10px;">{{ book.title }}</h4>
+                    <p style="color: #666; margin-bottom: 10px;">
+                        <strong>Author:</strong> {{ book.author.name }}
+                    </p>
+                    <a href="{% url 'relationship_app:book_detail' book.id %}" 
+                       style="color: #2196F3; text-decoration: none; font-size: 14px;">
+                        View Details →
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 30px; background: #f8f9fa; border-radius: 8px; margin-bottom: 30px;">
+            <p style="color: #666;">No books available at the moment.</p>
+        </div>
+    {% endif %}
+    
+    <!-- Member Benefits -->
+    <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h3 style="color: #7b1fa2; margin-bottom: 15px;">🎁 Member Benefits</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div style="display: flex; align-items: center;">
+                <div style="font-size: 24px; margin-right: 10px;">📖</div>
+                <div>
+                    <strong>Unlimited Access</strong>
+                    <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Browse all books</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <div style="font-size: 24px; margin-right: 10px;">🏛️</div>
+                <div>
+                    <strong>Multiple Libraries</strong>
+                    <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Access all locations</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <div style="font-size: 24px; margin-right: 10px;">🔒</div>
+                <div>
+                    <strong>Secure Account</strong>
+                    <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Your data is protected</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div style="background: #e8f5e9; padding: 20px; border-radius: 8px;">
+        <h3 style="color: #2e7d32; margin-bottom: 15px;">⚡ Quick Actions</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <a href="{% url 'relationship_app:list_books' %}" 
+               style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+                Browse Books
+            </a>
+            <a href="{% url 'relationship_app:library_list' %}" 
+               style="background: #2196F3; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+                Find Libraries
+            </a>
+            <a href="{% url 'relationship_app:profile' %}" 
+               style="background: #9C27B0; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+                My Profile
+            </a>
+            <a href="{% url 'relationship_app:home' %}" 
+               style="background: #FF9800; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+                Home Page
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
